@@ -13,12 +13,28 @@ export class Cell{
     }
 
     linkTile(tile){
-
         tile.setXY(this.x, this.y)
         this.linkedTile = tile
+    }
+    unLinkTile(){
+        this.linkedTile = null
     }
 
     isEmpty(){
         return !this.linkedTile
     }
+
+    linkTileForMerge(tile){
+        tile.setXY(this.x, this.y)
+        this.linkedTileForMerge(tile)
+    }
+
+
+    hasTileForMerge(){
+        return !!this.linkedTileForMerge
+    }
+    canAccept(newTile){
+        return this.isEmpty() || (!this.hasTileForMerge() && this.linkedTile.value === newTile.value)
+    }
+    
 }
