@@ -51,8 +51,8 @@ body{
     border-radius: 8px;
     font-size: 10vmin;
     font-weight: 600;
-    background: #fff;
-    color: #000;
+    background: hsl(25, 60%, var(--bg-lightness));
+    color: hsl(20, 25%, var(--text-lightness));
 
     transition: .2s linear;
     animation: show .2s;
