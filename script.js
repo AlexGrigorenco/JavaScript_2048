@@ -42,10 +42,10 @@ function handleInput(event){
 
     const newTile = new Tile(gameBoard)
     grid.getRandomEmptyCell().linkTile(newTile)
-    if(Math.random() > 0.5){
-        const extraTile = new Tile(gameBoard)
-        grid.getRandomEmptyCell().linkTile(extraTile)
-    }
+    // if(Math.random() > 0.5){
+    //     const extraTile = new Tile(gameBoard)
+    //     grid.getRandomEmptyCell().linkTile(extraTile)
+    // }
 
     setupInputOnce()
 }
