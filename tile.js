@@ -22,11 +22,15 @@ export class Tile{
     }
 
     setValue(value){
-        this.value = Math.random() > 0.5 ? 2 : 4
+        this.value = value
         this.tileElement.textContent = this.value
 
         const bgLightness = 100 - Math.log2(value) * 9
         this.tileElement.style.setProperty("--bg-lightness", `${bgLightness}%`)
         this.tileElement.style.setProperty("--text-lightness", `${bgLightness < 50 ? 90 : 10}%`)
+    }
+
+    removeFromDOM(){
+        this.tileElement.remove()
     }
 }

@@ -7,7 +7,6 @@ const gameBoard = document.getElementById('game-board')
 
 const grid = new Grid(gameBoard)
 grid.getRandomEmptyCell().linkTile(new Tile(gameBoard))
-grid.getRandomEmptyCell().linkTile(new Tile(gameBoard))
 Math.random() > 0.5 ? grid.getRandomEmptyCell().linkTile(new Tile(gameBoard)) : null
 
 setupInputOnce()
@@ -25,17 +24,27 @@ function handleInput(event){
             break
 
         case 'ArrowDown':
+            moveDown()
             break
 
         case 'ArrowLeft':
+            moveLeft()
             break
 
         case 'ArrowRight':
+            moveRight()
             break
 
         default:
             setupInputOnce()
             return
+    }
+
+    const newTile = new Tile(gameBoard)
+    grid.getRandomEmptyCell().linkTile(newTile)
+    if(Math.random() > 0.5){
+        const extraTile = new Tile(gameBoard)
+        grid.getRandomEmptyCell().linkTile(extraTile)
     }
 
     setupInputOnce()
@@ -44,9 +53,22 @@ function handleInput(event){
 function moveUp(){
     slideTiles(grid.cellsGroupedByColumn)
 }
+function moveDown(){
+    slideTiles(grid.cellsGroupedByReversedColumn)
+}
+function moveLeft(){
+    slideTiles(grid.cellsGroupedByRow)
+}
+function moveRight(){
+    slideTiles(grid.cellsGroupedByReversedRow)
+}
 
 function slideTiles(groupedCells){
     groupedCells.forEach(group => slideTilesInGroup(group))
+
+    grid.cells.forEach(cell => {
+        cell.hasTileForMerge() && cell.mergeTiles()
+    })
 }
 
 function slideTilesInGroup(group){
@@ -83,4 +105,6 @@ function slideTilesInGroup(group){
 
 
 
-console.log(gameBoard)
+
+
+

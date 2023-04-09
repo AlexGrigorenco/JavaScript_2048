@@ -19,6 +19,9 @@ export class Cell{
     unLinkTile(){
         this.linkedTile = null
     }
+    unlinkTileForMerge(){
+        this.linkedTileForMerge = null
+    }
 
     isEmpty(){
         return !this.linkedTile
@@ -26,7 +29,7 @@ export class Cell{
 
     linkTileForMerge(tile){
         tile.setXY(this.x, this.y)
-        this.linkedTileForMerge(tile)
+        this.linkedTileForMerge = tile
     }
 
 
@@ -37,4 +40,10 @@ export class Cell{
         return this.isEmpty() || (!this.hasTileForMerge() && this.linkedTile.value === newTile.value)
     }
     
+
+    mergeTiles(){
+        this.linkedTile.setValue(this.linkedTile.value + this.linkedTileForMerge.value)
+        this.linkedTileForMerge.removeFromDOM()
+        this.unlinkTileForMerge()
+    }
 }
