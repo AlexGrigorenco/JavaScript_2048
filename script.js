@@ -12,38 +12,116 @@ const grid = new Grid(gameBoard)
 grid.getRandomEmptyCell().linkTile(new Tile(gameBoard))
 Math.random() > 0.5 ? grid.getRandomEmptyCell().linkTile(new Tile(gameBoard)) : null
 
+setupTouchOnce()
 setupInputOnce()
 
 function handleTouchStart(event) {
     xDown = event.touches[0].clientX;
     yDown = event.touches[0].clientY;
+    setupTouchOnce()
 }
 
+async function handleTouchMove(event) {
+
+    addAlert()
+
+    if (!xDown || !yDown) {
+      return;
+    }
+  
+    let xUp = event.touches[0].clientX;
+    let yUp = event.touches[0].clientY;
+  
+    let xDiff = xDown - xUp;
+    let yDiff = yDown - yUp;
+  
+    if (Math.abs(xDiff) > Math.abs(yDiff)) {
+      if (xDiff > 0) {
+        // свайп влево
+        if(!canMoveLeft()){
+            setupTouchOnce()
+            return
+        }
+        await moveLeft()
+        addNewTile()
+      } else {
+        // свайп вправо
+        if(!canMoveRight()){
+            setupTouchOnce()
+            return
+        }
+        await moveRight()
+        addNewTile()
+      }
+    } else {
+    if (yDiff > 0) {
+        // свайп вверх
+        if(!canMoveUp()){
+            setupTouchOnce()
+            return
+        }
+        await moveUp()
+        addNewTile()
+      } else {
+        // свайп вниз
+        if(!canMoveDown()){
+            setupTouchOnce()
+            return
+        }
+        await moveDown()
+        addNewTile()
+      }
+    }
+  
+    xDown = null;
+    yDown = null;
+
+    setupTouchOnce()
+}
+
+
+
+function setupTouchOnce(){
+    document.addEventListener('touchstart', handleTouchStart, {once: true});
+    document.addEventListener('touchmove', handleTouchMove, {once: true});
+}
 function setupInputOnce(){
     window.addEventListener('keydown', handleInput, {once: true})
 }
 
-async function handleInput(event){
+function addNewTile(){
+    const newTile = new Tile(gameBoard)
+    grid.getRandomEmptyCell().linkTile(newTile)
+}
 
+function addAlert(){
     if(!canMoveUp() && !canMoveDown() && !canMoveLeft() && !canMoveRight()){
 
-        const alert = document.createElement('div')
-        alert.classList.add('alert-body')
-        alert.classList.add('reload')
-        alert.innerHTML = `<div class="alert"><p>Game over!</p><p>Try again!</p><div class="reload-button reload"><img src="./images/close-bold-svgrepo-com.svg" alt="reload"></div></div>`
-        gameBoard.append(alert)
+        if(!document.querySelector('.alert-body')){
 
-        gameBoard.querySelector('.alert').addEventListener('click', e => e.stopPropagation())
+            const alert = document.createElement('div')
+            alert.classList.add('alert-body')
+            alert.classList.add('reload')
+            alert.innerHTML = `<div class="alert"><p>Game over!</p><p>Try again!</p><div class="reload-button reload"><img src="./images/close-bold-svgrepo-com.svg" alt="reload"></div></div>`
+            gameBoard.append(alert)
 
-        const reloads = gameBoard.querySelectorAll('.reload')
-        reloads.forEach(reload => {
-            reload.addEventListener('click', () => {
-                location.reload()
+            gameBoard.querySelector('.alert').addEventListener('click', e => e.stopPropagation())
+
+            const reloads = gameBoard.querySelectorAll('.reload')
+            reloads.forEach(reload => {
+                reload.addEventListener('click', () => {
+                    location.reload()
+                })
             })
-        })
+        }
 
         return
     }
+}
+
+async function handleInput(event){
+
+    addAlert()
     
     switch(event.key){
 
@@ -84,8 +162,7 @@ async function handleInput(event){
             return
     }
 
-    const newTile = new Tile(gameBoard)
-    grid.getRandomEmptyCell().linkTile(newTile)
+    addNewTile()
     // if(Math.random() > 0.5){
     //     const extraTile = new Tile(gameBoard)
     //     grid.getRandomEmptyCell().linkTile(extraTile)
