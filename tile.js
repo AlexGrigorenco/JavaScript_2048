@@ -33,4 +33,10 @@ export class Tile{
     removeFromDOM(){
         this.tileElement.remove()
     }
+
+    waitForTransitionEnd(){
+        return new Promise(resolve => {
+            this.tileElement.addEventListener('transitionend', resolve, {once: true})
+        })
+    }
 }
