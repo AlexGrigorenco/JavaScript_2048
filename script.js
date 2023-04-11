@@ -5,17 +5,45 @@ import { Tile } from "./tile.js"
 
 const gameBoard = document.getElementById('game-board')
 
+let xDown = null;
+let yDown = null;
+
 const grid = new Grid(gameBoard)
 grid.getRandomEmptyCell().linkTile(new Tile(gameBoard))
 Math.random() > 0.5 ? grid.getRandomEmptyCell().linkTile(new Tile(gameBoard)) : null
 
 setupInputOnce()
 
+function handleTouchStart(event) {
+    xDown = event.touches[0].clientX;
+    yDown = event.touches[0].clientY;
+}
+
 function setupInputOnce(){
     window.addEventListener('keydown', handleInput, {once: true})
 }
 
 async function handleInput(event){
+
+    if(!canMoveUp() && !canMoveDown() && !canMoveLeft() && !canMoveRight()){
+
+        const alert = document.createElement('div')
+        alert.classList.add('alert-body')
+        alert.classList.add('reload')
+        alert.innerHTML = `<div class="alert"><p>Game over!</p><p>Try again!</p><div class="reload-button reload"><img src="./images/close-bold-svgrepo-com.svg" alt="reload"></div></div>`
+        gameBoard.append(alert)
+
+        gameBoard.querySelector('.alert').addEventListener('click', e => e.stopPropagation())
+
+        const reloads = gameBoard.querySelectorAll('.reload')
+        reloads.forEach(reload => {
+            reload.addEventListener('click', () => {
+                location.reload()
+            })
+        })
+
+        return
+    }
     
     switch(event.key){
 
@@ -62,6 +90,7 @@ async function handleInput(event){
     //     const extraTile = new Tile(gameBoard)
     //     grid.getRandomEmptyCell().linkTile(extraTile)
     // }
+
 
     setupInputOnce()
 }
